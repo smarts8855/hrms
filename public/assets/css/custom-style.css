@@ -1,0 +1,125 @@
+.autocomplete-suggestions{
+
+	background-color:#66FFBA!IMPORTANT;
+	border: 1px solid #c3c3c3 !important;
+	padding: 1px 5px !important;
+	cursor: Pointer !important;
+
+}
+
+.text-gray{
+	border-top:1px solid #f3f3f3;
+	margin: 0px;
+	padding: 5px;
+	color: #000 !important;
+}
+
+.text-gray-b{
+	background:  #f9f9f9;
+	margin: 0px;
+	padding: 5px;
+	color: #000 !important;
+}
+
+.text-gray-c{
+	background:  #fcfcfc;
+	margin: 0px;
+	padding: 5px;
+	color: #999 !important;
+}
+
+/*search style*/
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+.search {
+  width: 100%;
+  position: relative; 
+}
+
+.searchTerm {
+  float: left;
+  width: 100%;
+  border: 3px solid #00B4CC;
+  padding: 5px;
+  height: 20px;
+  border-radius: 5px;
+  outline: none;
+  color: #9DBFAF; 
+}
+
+.searchTerm:focus{
+  color: #00B4CC;
+}
+
+.searchButton {
+  position: absolute;  
+  right: -50px;
+  width: 40px;
+  height: 36px;
+  border: 1px solid #00B4CC;
+  background: #00B4CC;
+  text-align: center;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+
+/*page search style*/
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+body{
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+  width: 100%;
+  position: relative; 
+}
+
+.searchTerm {
+  float: left;
+  width: 100%;
+  border: 3px solid #00B4CC;
+  padding: 5px;
+  height: 20px;
+  border-radius: 5px;
+  outline: none;
+  color: #9DBFAF; 
+}
+
+.searchTerm:focus{
+  color: #00B4CC;
+}
+
+.searchButton {
+  position: absolute;  
+  right: -50px;
+  width: 40px;
+  height: 36px;
+  border: 1px solid #00B4CC;
+  background: #00B4CC;
+  text-align: center;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.textbox { 
+    border: 1px;
+    background-color: #33AD0A; 
+    outline:0; 
+    height:25px; 
+    width: 275px; 
+  } 
+  $('.autocomplete-suggestions').css({
+    color: '#0f3'
+  });
+
+  .autocomplete-suggestions{
+    color:#fff;
+    font-size: 15px;
+  }
+
+ 

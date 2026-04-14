@@ -1,0 +1,37 @@
+[12-Sep-2023 18:55:04 UTC] PHP Warning:  gzinflate(): data error in /home/njcgov/njcprocurement/public/BiddingDocument/include.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=3) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=4) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=20) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:00 UTC] PHP Parse error:  syntax error, unexpected 'w¯ýVt' (T_STRING) in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=3) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=4) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=20) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 22:17:01 UTC] PHP Parse error:  syntax error, unexpected 'w¯ýVt' (T_STRING) in /home/njcgov/njcprocurement/public/BiddingDocument/task.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=3) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=4) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=20) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Parse error:  syntax error, unexpected 'w¯ýVt' (T_STRING) in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=3) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=4) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  '' (ASCII=20) state=0 in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Warning:  Unexpected character in input:  ' in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3
+[12-Sep-2023 23:19:21 UTC] PHP Parse error:  syntax error, unexpected 'w¯ýVt' (T_STRING) in /home/njcgov/njcprocurement/public/BiddingDocument/options.php on line 3

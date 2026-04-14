@@ -1,0 +1,491 @@
+<?php
+namespace App\Http\Controllers\payroll;
+use App\Http\Requests;
+use App\Role;
+use App\User;
+use Auth;
+use Entrust;
+use App\Permission;
+use Illuminate\Http\Request;
+use DB;
+use App\Http\Controllers\Controller;
+use Session;
+use App\Http\Controllers\payroll\ParentController;
+
+class ReportSalaryProjectionController extends ParentController
+{
+  
+    public function __construct(Request $request)
+    {
+        
+    }
+
+
+    public function createSalaryProjection()
+    {
+        $data['CourtInfo']=$this->CourtInfo();
+        $data['courtDivisions']  = DB::table('tbldivision')->where('division', '<>', 'Test Only')->get();
+        $data['curDivision'] = $this->curDivision(Auth::user()->id);
+        $data['allbanklist']  = DB::table('tblbanklist')->orderBy('tblbanklist.bank', 'Asc')->get();
+
+        return view('payroll.SalaryProjection.index', $data);    
+    }
+
+
+
+public function viewSalaryProjection(Request $request)
+{
+    $this->validate($request,[       
+      'month'     => 'required|string', 
+      'year'      => 'required|integer', 
+    ]);
+
+    $data['month']    = $request['month'];
+    $data['year']     = $request['year'];
+    $division = $request['division'];
+    $data['divisionName'] = DB::table('tbldivision')->where('divisionID', '=', $division)->value('division');
+    $data['curDivision'] = $this->curDivision(Auth::user()->id);
+    
+    $data['salary_detail'] = DB::table('tblpayment_consolidated')
+            ->where('tblpayment_consolidated.month',     '=', $data['month'])
+            ->where('tblpayment_consolidated.year',      '=', $data['year'])
+            ->where('tblpayment_consolidated.divisionID', $division ? '=' : '<>', $division )
+            ->where('tblpayment_consolidated.rank','<>',2)
+            ->groupBy('tblpayment_consolidated.grade')
+            ->orderBy('grade', 'Desc')
+            ->select(DB::Raw("SUM(TEarn) as totalMonthlyEmo"), DB::Raw("SUM(PEN) as totalMonthlyPEN"), DB::Raw("COUNT(staffid) as totalStaffNo"), 'grade')
+            ->get();
+
+    return view('payroll.SalaryProjection.report', $data);    
+}
+
+
+
+
+
+
+public function Retrieve(Request $request)
+{
+    $month     = trim($request->input('month'));
+    $year      = trim($request->input('year'));
+    $bankID    = trim($request->input('bankName'));
+    $bankGroup = trim($request->input('bankGroup'));
+    //$warrant   = trim($request->input('warrant'));
+    $division  = trim($request->input('division'));
+     $court    = trim($request->input('court'));
+  
+    $this->validate($request,[       
+          'month'     => 'required|string', 
+          'year'      => 'required|integer', 
+          //'bankName'  => 'required|integer', 
+          //'bankGroup' => 'required|integer',
+          //'warrant'   => 'required|regex:/[a-zA-Z.]/'   
+    ]);
+    $getBank  = DB::table('tblbanklist')
+              ->where('bankID', $bankID)
+              ->first();
+              if($bankID !='')
+              {
+    $bankName = $getBank -> bank;
+    }
+    /*$data['summary_detail'] = DB::table('tblpayment')
+            ->where('tblpayment.month',     '=', $month)
+            ->where('tblpayment.year',      '=', $year)
+            ->where('tblpayment.division',  '=', $division)
+            ->where('tblpayment.bank',      '=', $bankName )
+            ->where('tblpayment.bankGroup', '=', $bankGroup)
+            ->orderBy('basic_salary','DESC')
+            ->get();*/
+
+
+
+       if($bankID != '')
+      {
+      $data['courtname']  = DB::table('tbl_court')
+      ->where('id','=', $court)
+      ->first();
+      $data['courtDivisions'] = '';
+       $data['summary_detail'] = DB::table('tblpayment_consolidated')
+          ->where('tblpayment_consolidated.month',     '=', $month)
+          ->where('tblpayment_consolidated.year',      '=', $year)
+          ->where('tblpayment_consolidated.courtID',  '=', $court)
+          ->where('tblpayment_consolidated.bank',      '=',$bankID )
+          //->where('tblpayment_consolidated.bankGroup', '=', $bankGroup)
+          ->where('tblpayment_consolidated.rank','!=',2)
+          //->orderBy('basic_salary','DESC')
+          ->get();
+          return view('summary.summary', $data);
+      }
+      elseif($division != '' &&  $bankGroup != '')
+      {
+
+       $data['courtname'] = '';
+      $data['courtDivisions']  = DB::table('tbl_court')
+      ->join('tbldivision','tbldivision.courtID','=', 'tbl_court.id')
+      ->where('tbl_court.id','=',$court)
+      ->where('tbldivision.divisionID','=',$division)
+      ->first();
+       $data['summary_detail'] = DB::table('tblpayment_consolidated')
+          ->where('tblpayment_consolidated.month',     '=', $month)
+          ->where('tblpayment_consolidated.year',      '=', $year)
+          ->where('tblpayment_consolidated.divisionID',  '=', $division)
+          ->where('tblpayment_consolidated.courtID',  '=', $court)
+          ->where('tblpayment_consolidated.bank',      '=',$bankID )
+          ->where('tblpayment_consolidated.bankGroup', '=', $bankGroup)
+          ->where('tblpayment_consolidated.rank','!=',2)
+          //->orderBy('basic_salary','DESC')
+          ->get();
+      }
+      if($bankGroup == '' && $bankID=='')
+      {
+        if($division == '')
+      {
+      $data['courtname']  = DB::table('tbl_court')
+      ->where('id','=', $court)
+      ->first();
+      $data['courtDivisions'] = '';
+       $data['summary_detail'] = DB::table('tblpayment_consolidated')
+          ->where('tblpayment_consolidated.month',     '=', $month)
+          ->where('ttblpayment_consolidated.year',      '=', $year)
+          ->where('tblpayment_consolidated.courtID',  '=', $court)
+          ->where('tblpayment_consolidated.rank','!=',2)
+          //->where('tblpayment_consolidated.bank',      '=',$bankID )
+          //->where('tblpayment.bankGroup', '=', $bankGroup)
+          //->orderBy('basic_salary','DESC')
+          ->get();
+      }
+      else
+      {
+
+       $data['courtname'] = '';
+      $data['courtDivisions']  = DB::table('tbl_court')
+      ->join('tbldivision','tbldivision.courtID','=', 'tbl_court.id')
+      ->where('tbl_court.id','=',$court)
+      ->where('tbldivision.divisionID','=',$division)
+      ->first();
+       $data['summary_detail'] = DB::table('tblpayment_consolidated')
+          ->where('tblpayment_consolidated.month',     '=', $month)
+          ->where('tblpayment_consolidated.year',      '=', $year)
+          ->where('tblpayment_consolidated.divisionID',  '=', $division)
+          ->where('tblpayment_consolidated.courtID',  '=', $court)
+          ->where('tblpayment_consolidated.rank','!=',2)
+          //->where('tblpayment_consolidated.bank',      '=',$bankID )
+          //->where('tblpayment.bankGroup', '=', $bankGroup)
+          //->orderBy('basic_salary','DESC')
+          ->get();
+      }
+      }
+
+//dd($data['summary_detail']);
+
+    Session::put('schmonth', $month." ".$year); 
+    if($bankID != '')
+    {
+    Session::put('bank', $bankName ." ".$bankGroup);
+    }
+    //Session::put('warrant', $warrant);
+    return view('payroll.summary.summary', $data);
+  }
+  
+  public function calculateSum($month,$year,$field)
+  {
+       $data['basic'] = DB::table('tblpayment_consolidated')
+    ->join('tblbanklist','tblbanklist.bankID','=','tblpayment_consolidated.bank')
+    ->where('tblpayment_consolidated.month',     '=', $month)
+    ->where('tblpayment_consolidated.year',      '=', $year)
+    ->where('tblpayment_consolidated.rank','!=',2)
+    ->groupBy('tblpayment_consolidated.bank')
+    ->sum($field);
+  }
+   public function countStaff($month,$year)
+  {
+       $data['basic'] = DB::table('tblpayment_consolidated')
+    ->join('tblbanklist','tblbanklist.bankID','=','tblpayment_consolidated.bank')
+    ->where('tblpayment_consolidated.month','=', $month)
+    ->where('tblpayment_consolidated.year', '=', $year)
+    ->where('tblpayment_consolidated.rank','!=',2)
+    ->groupBy('tblpayment_consolidated.bank')
+    ->count();
+  }
+  
+  public function analysis()
+  {
+  $data['CourtInfo']=$this->CourtInfo();
+      if($data['CourtInfo']->courtstatus==0){$request['court']=$data['CourtInfo']->courtid;}
+      if($data['CourtInfo']->divisionstatus==0){$request['division']=$data['CourtInfo']->divisionid;}
+  $data['courts'] =  DB::table('tbl_court')->get();
+      $courtSessionId = session('anycourt');
+         $data['courtDivisions']  = DB::table('tbldivision')
+         ->where('courtID', '=', $courtSessionId)
+         ->get();
+
+         $data['courtDivisions']  = DB::table('tbldivision')
+            //  ->where('courtID', '=', $courtSessionId)
+                ->get();
+        $data['curDivision'] = $this->curDivision(Auth::user()->id);
+
+          $data['allbanklist']  = DB::table('tblbanklist')
+         ->orderBy('tblbanklist.bank', 'Asc')
+         ->get();
+
+  return view('payroll.summary.analysisParam',$data);
+  }
+
+  public function curDivision($userId){
+    $currentDivision = DB::table("users")
+                            ->join('tbldivision', 'tbldivision.divisionID', '=', 'users.divisionID')
+                            ->where('users.id', '=', $userId)
+                            ->select('tbldivision.division', 'tbldivision.divisionID')
+                            ->first();
+   return $currentDivision;
+}
+  
+  
+  public function analysisDisplay(Request $request)
+  {
+      $month     = trim($request->input('month'));
+      $year      = trim($request->input('year'));
+      $divisionID      = trim($request->input('division'));
+      $staffInBank = [];
+      $staffListBank = [];
+      $variableElement = [];
+      
+      $staffEarnElement = [];
+      $staffDeductionElement = [];
+      $getStaffMonthEarnAmount = [];
+      $getStaffMonthDeductionAmount = [];
+
+      
+      //Get all banks
+      $allBanks  =  DB::table('tblpayment_consolidated')
+                ->join('tblbanklist', 'tblbanklist.bankID', '=', 'tblpayment_consolidated.bank')
+                ->where('tblpayment_consolidated.month',     '=', $month)
+                ->where('tblpayment_consolidated.year',      '=', $year)
+                ->where('tblpayment_consolidated.divisionID', $divisionID ? '=' : '<>', $divisionID)
+                ->where('tblpayment_consolidated.rank', '<>', 2)
+                ->groupBy('tblpayment_consolidated.bank')
+                ->select('tblpayment_consolidated.bank', 'tblbanklist.bank as bank_name')
+                ->get();
+
+      //compute data
+      foreach($allBanks as $key=>$bankVal)
+      {     
+          //Get staff for banks
+          $staffListBank = DB::table('tblpayment_consolidated')
+                      ->where('tblpayment_consolidated.month',     '=', $month)
+                      ->where('tblpayment_consolidated.year',      '=', $year)
+                      ->where('tblpayment_consolidated.bank', $bankVal->bank)
+                      ->where('tblpayment_consolidated.rank', '<>', 2)
+                      ->where('tblpayment_consolidated.divisionID', $divisionID ? '=' : '<>', $divisionID)
+                      ->select('staffid')
+                      ->get();
+          $staffInBank[$bankVal->bank] = count($staffListBank);
+                      
+         //get variable sum
+          $variableElement[$bankVal->bank] = DB::table('tblpayment_consolidated')
+                  ->join('tblbanklist', 'tblbanklist.bankID', '=', 'tblpayment_consolidated.bank')
+                  ->where('tblpayment_consolidated.month',     '=', $month)
+                  ->where('tblpayment_consolidated.year',      '=', $year)
+                  ->where('tblpayment_consolidated.bank', $bankVal->bank)
+                  ->where('tblpayment_consolidated.divisionID', $divisionID ? '=' : '<>', $divisionID)
+                  ->where('tblpayment_consolidated.rank', '<>', 2)
+                  ->groupBy('tblpayment_consolidated.bank')
+                  ->select('*',
+                    DB::raw("SUM(BS) as totalBS"),
+                    DB::raw("SUM(TEarn) as totalTEarn"),
+                    DB::raw("SUM(OEarn) as totalOEarn"),
+                    DB::raw("SUM(NetPay) as totalNetPay"),
+                    DB::raw("SUM(TD) as totalTD"),
+                    DB::raw("SUM(PEC) as totalPEC"),
+                    DB::raw("SUM(UD) as totalUD"),
+                    DB::raw("SUM(PEN) as totalPEN"),
+                    DB::raw("SUM(TAX) as totalTAX"),
+                    DB::raw("SUM(NHF) as totalNHF"),
+                    DB::raw("SUM(OD) as totalOD"),
+                    DB::raw("SUM(AEarn) as totalAEarn")
+                  )
+                  ->first();
+      }
+      
+       //Dynamic Elements
+       $getdynamicData = $this->DynamicEaringDeduction($year, $month, $divisionID, $allBanks);
+       $staffEarnElement = $getdynamicData['staffEarnElement'];
+       $staffDeductionElement = $getdynamicData['staffDeductionElement'];
+       $getStaffMonthEarnAmount = $getdynamicData['getStaffMonthEarnAmount'];
+       $getStaffMonthDeductionAmount = $getdynamicData['getStaffMonthDeductionAmount'];
+      
+      //data
+      $data['variableElement']  = $variableElement;
+      $data['staffInBank']      = $staffInBank;
+      $data['allBanks']         =  $allBanks;
+
+      $data['staffEarnElement'] = $staffEarnElement;
+      $data['staffDeductionElement'] = $staffDeductionElement;
+      $data['getStaffMonthEarnAmount'] = $getStaffMonthEarnAmount;
+      $data['getStaffMonthDeductionAmount'] = $getStaffMonthDeductionAmount;
+      
+      $data['month'] = trim($request->input('month'));
+      $data['year'] = trim($request->input('year'));
+    return view('payroll.summary.analysis',$data);
+  }
+  
+
+  public function DynamicEaringDeduction($year = null, $month = null, $division = null, $allBanks = [])
+  { 
+    //=========================START===================================
+    $getStaffMonthEarn = [];
+    $getStaffMonthDeduction = [];
+    
+   
+    //Get list of Earning for all staff
+    $data['staffEarnElement'] = DB::table('tblotherEarningDeduction')
+      ->Join('tblcvSetup', 'tblotherEarningDeduction.CVID', '=', 'tblcvSetup.ID')
+      ->where('tblotherEarningDeduction.year', $year)
+      ->where('tblotherEarningDeduction.month', $month)
+      ->where('tblotherEarningDeduction.divisionID', $division ? '=' : '<>', $division)
+      ->where('tblotherEarningDeduction.particularID', 1)
+      ->where('tblotherEarningDeduction.amount', '<>', 0)
+      ->orderBy('tblcvSetup.rank')
+      ->groupBy('tblotherEarningDeduction.CVID')
+      ->select('description', 'divisionID', 'amount', 'tblotherEarningDeduction.CVID', 'tblcvSetup.ID as cvsetupID', 'tblotherEarningDeduction.ID', 'rank', 'tblcvSetup.particularID', 'tblotherEarningDeduction.staffid')
+      ->get();
+
+    //Get list of Deduction for all staff
+    $data['staffDeductionElement'] = DB::table('tblotherEarningDeduction')
+      ->Join('tblcvSetup', 'tblotherEarningDeduction.CVID', '=', 'tblcvSetup.ID')
+      ->where('tblotherEarningDeduction.year', $year)
+      ->where('tblotherEarningDeduction.month', $month)
+      ->where('tblotherEarningDeduction.divisionID', $division ? '=' : '<>', $division)
+      ->where('tblotherEarningDeduction.particularID', 2)
+      ->where('tblotherEarningDeduction.amount', '<>', 0)
+      ->orderBy('tblcvSetup.rank')
+      ->groupBy('tblotherEarningDeduction.CVID')
+      ->select('description', 'amount', 'tblotherEarningDeduction.CVID', 'tblcvSetup.ID as cvsetupID', 'tblotherEarningDeduction.ID', 'rank', 'tblcvSetup.particularID', 'tblotherEarningDeduction.staffid')
+      ->get();
+    
+    foreach ($allBanks as $bank)
+    {
+      $arrStaff = [];
+      $staffListBank = DB::table('tblpayment_consolidated')
+                      ->where('tblpayment_consolidated.month', '=', $month)
+                      ->where('tblpayment_consolidated.year', '=', $year)
+                      ->where('tblpayment_consolidated.bank', $bank->bank)
+                      ->where('tblpayment_consolidated.rank', '<>', 2)
+                      ->where('tblpayment_consolidated.divisionID', $division ? '=' : '<>', $division)
+                      ->select('staffid')
+                      ->get();
+
+      foreach ($staffListBank as $value) {
+        $arrStaff[] = $value->staffid;
+      }
+     
+      ///Earning - Get Element amount for each and sum up duplicate element amount
+      foreach ($data['staffEarnElement'] as $key2 => $staffCVEarn) 
+      {
+        $getStaffMonthEarn[$bank->bank][$staffCVEarn->CVID] = DB::table('tblotherEarningDeduction')
+              ->whereIn('tblotherEarningDeduction.staffid', $arrStaff)
+              ->where('tblotherEarningDeduction.CVID', $staffCVEarn->CVID)
+              ->where('tblotherEarningDeduction.year', $year)
+              ->where('tblotherEarningDeduction.month', $month)
+              ->where('tblotherEarningDeduction.divisionID', $division ? '=' : '<>', $division)
+              ->first([DB::raw("SUM(tblotherEarningDeduction.amount) as staffEarnings")]);
+      }
+      
+      //Deduction - Get Element amount for each and sum up duplicate element amount
+      foreach ($data['staffDeductionElement'] as $key2 => $staffCVEarn) {
+        $getStaffMonthDeduction[$bank->bank][$staffCVEarn->CVID] = DB::table('tblotherEarningDeduction')
+              ->whereIn('tblotherEarningDeduction.staffid', $arrStaff)
+              ->where('tblotherEarningDeduction.CVID', $staffCVEarn->CVID)
+              ->where('tblotherEarningDeduction.year', $year)
+              ->where('tblotherEarningDeduction.month', $month)
+              ->where('tblotherEarningDeduction.divisionID', $division ? '=' : '<>', $division)
+              ->first([DB::raw("SUM(tblotherEarningDeduction.amount) as staffDeductions")]);
+      }
+    }
+    
+    $data['getStaffMonthEarnAmount']        = $getStaffMonthEarn;
+    $data['getStaffMonthDeductionAmount']   = $getStaffMonthDeduction;
+  
+    //=========================END=====================================
+    return $data;
+  }
+
+
+ 
+  
+   public function summaryByBank()
+  {
+  $data['CourtInfo']=$this->CourtInfo();
+      if($data['CourtInfo']->courtstatus==0){$request['court']=$data['CourtInfo']->courtid;}
+      if($data['CourtInfo']->divisionstatus==0){$request['division']=$data['CourtInfo']->divisionid;}
+  $data['courts'] =  DB::table('tbl_court')->get();
+      $courtSessionId = session('anycourt');
+         $data['courtDivisions']  = DB::table('tbldivision')
+         ->where('courtID', '=', $courtSessionId)
+         ->get();
+
+          $data['allbanklist']  = DB::table('tblbanklist')
+         ->orderBy('tblbanklist.bank', 'Asc')
+         ->get();
+
+  return view('payroll.summary/bybanks',$data);
+  }
+  
+  public function summaryPostBank(Request $request)
+  {
+    $month     = trim($request->input('month'));
+    $year      = trim($request->input('year'));
+    
+    $data['month'] = $month;
+    $data['year'] = $year;
+    
+  /*$data['group'] = DB::table('tblpayment_consolidated')
+    ->join('tblbanklist','tblbanklist.bankID','=','tblpayment_consolidated.bank')
+    ->where('tblpayment_consolidated.month',     '=', $month)
+    ->where('tblpayment_consolidated.year',      '=', $year)
+    ->orderBy('tblpayment_consolidated.bank', 'Asc')
+    ->select('*','tblbanklist.bank as staffbank','tblpayment_consolidated.bank as bk')
+    
+    ->get();*/
+    $data['epayment_detail'] = DB::table('tblpayment_consolidated')
+       ->join('tblbanklist','tblbanklist.bankID','=','tblpayment_consolidated.bank')
+        ->leftJoin('tblbacklog','tblbacklog.staffid','=','tblpayment_consolidated.staffid','tblbacklog.month','=','tblpayment_consolidated.month','tblbacklog.year','=','tblpayment_consolidated.year')
+        //->where('tblbacklog.month',     '=', $month)
+        //->where('tblbacklog.year',      '=', $year)
+        ->where('tblpayment_consolidated.month',     '=', $month)
+        ->where('tblpayment_consolidated.year',      '=', $year)
+         ->where('tblpayment_consolidated.rank','!=',2)
+        //->where('tblpayment_consolidated.divisionID',  '=', $division)
+        //->where('tblpayment_consolidated.courtID',  '=', $court)
+        ->orderBy('tblpayment_consolidated.bank','DESC')
+        ->orderBy('tblpayment_consolidated.rank','DESC')
+        ->orderBy('tblpayment_consolidated.name','ASC')
+        ->get();
+        //dd($data['epayment_detail']);
+        $data['epayment_total'] = DB::table('tblpayment_consolidated')
+        
+        ->where('tblpayment_consolidated.month',     '=', $month)
+        ->where('tblpayment_consolidated.year',      '=', $year)
+        //->where('tblpayment_consolidated.divisionID',  '=', $division)
+        //->where('tblpayment_consolidated.courtID',  '=', $court)
+        //->where('tblpayment_consolidated.bank',      '=', $bankID )
+       // ->where('tblpayment_consolidated.bankGroup', '=',$bankGroup)
+       ->where('tblpayment_consolidated.rank','!=',2)
+       ->orderBy('tblpayment_consolidated.grade','DESC')
+        //->orderBy('tblpayment_consolidated.step','DESC')
+        ->orderBy('tblpayment_consolidated.bank','DESC')
+        ->orderBy('tblpayment_consolidated.rank','DESC')
+        ->orderBy('tblpayment_consolidated.name','ASC')
+        
+        ->get();
+        
+    return view('payroll.summary.summaryByBanks2',$data);
+  }
+  Public function ContravariableSum($year,$month,$cvid,$bank){
+	$List= DB::Select("SELECT sum(`amount`) as sumtotal FROM `tblotherEarningDeduction` WHERE `CVID`='$cvid' and `tblotherEarningDeduction`.`month`='$month' and `tblotherEarningDeduction`.`year`='$year' and 
+	exists( SELECT * FROM `tblpayment_consolidated` WHERE `tblpayment_consolidated`.`staffid`=`tblotherEarningDeduction`.`staffid` and `tblpayment_consolidated`.`year`='$year' 
+	and `tblpayment_consolidated`.`month`='$month' and `tblpayment_consolidated`.`bank`='$bank' and tblpayment_consolidated.rank !=2)");
+	if ($List){return $List[0]->sumtotal;} else {return 0;}
+	}
+  
+}

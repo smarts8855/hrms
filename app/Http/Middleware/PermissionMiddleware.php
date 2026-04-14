@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
+class PermissionMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next)
+    {
+        if (!Auth::check()) {
+            return $next($request);
+        }
+
+        $route = $request->route();
+        $uri = $route ? trim($route->uri(), '/') : trim($request->path(), '/');
+
+        if ($uri === '') {
+            return $next($request);
+        }
+
+        $routeCandidates = [
+            $uri,
+            '/' . $uri,
+            rtrim($uri, '/'),
+            '/' . rtrim($uri, '/'),
+        ];
+
+        $submoduleIds = DB::table('submodule')
+            ->whereIn('route', array_values(array_unique(array_filter($routeCandidates))))
+            ->pluck('submoduleID');
+
+        // Only enforce permission where a route is configured in the submodule table.
+        if ($submoduleIds->isEmpty()) {
+            return $next($request);
+        }
+
+        $roleIds = DB::table('assign_user_role')
+            ->where('userID', Auth::id())
+            ->pluck('roleID');
+
+        $hasPermission = $roleIds->isNotEmpty() && DB::table('assign_module_role')
+            ->whereIn('roleID', $roleIds)
+            ->whereIn('submoduleID', $submoduleIds)
+            ->exists();
+
+        if (!$hasPermission) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Unauthorized access to this route.'], 403);
+            }
+
+            abort(403, 'Unauthorized access to this route.');
+        }
+
+        return $next($request);
+    }
+}

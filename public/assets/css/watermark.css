@@ -1,0 +1,141 @@
+/* @if ($checkApproval == 0)
+        */
+.watermark-container {
+    position: relative;
+}
+
+
+.watermark-layer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    font-size: 30px;
+    font-weight: bold;
+    color: rgba(24, 215, 21, 0.05) !important;
+
+    line-height: 15px;
+    word-spacing: 10px;
+    white-space: pre-wrap;
+
+    pointer-events: none;
+    z-index: 0;
+}
+
+.print-container {
+    position: relative;
+    z-index: 2;
+}
+
+@media print {
+    /* keep watermark behind everything */
+    .watermark-layer {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 0 !important;
+        opacity: 1 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* content above watermark */
+    .print-container {
+        position: relative !important;
+        z-index: 2 !important;
+        background: transparent !important;
+    }
+
+    /* IMPORTANT: stop table from painting white over watermark */
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+        background: transparent !important;
+        background-color: transparent !important;
+    }
+
+    /* keep borders visible */
+    table,
+    th,
+    td {ine-height: 15px wit
+        border-color: #000 !important;
+    }
+
+    /* if you have bootstrap table styles, remove striping too */
+    .table-striped > tbody > tr:nth-of-type(odd),
+    .table-striped > tbody > tr:nth-of-type(even) {
+        background-color: transparent !important;
+    }
+
+    /* keep your green header rows (if any) */
+    tr[style*="background: green"],
+    tr[style*="background: green"] td,
+    .sig-header,
+    .RefD span {
+        background-color: green !important;
+        color: #fff !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
+
+/* @endif
+        */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    border: none;
+    /* needed for Firefox: */
+    overflow: hidden;
+    width: 60%;
+}
+
+.bg {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+    -webkit-animation: myfirst 5s;
+    /* Chrome, Safari, Opera */
+    animation: myfirst 5s;
+}
+.tblborder {
+    border: 1px solid #000 !important;
+}
+
+@-webkit-keyframes myfirst {
+    from {
+        opacity: 0.2;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Standard syntax */
+@keyframes myfirst {
+    from {
+        opacity: 0.2;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.type {
+    border: 0px;
+    outline: 0px;
+
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: "";
+}

@@ -1,0 +1,170 @@
+@extends('layouts.layout')
+
+@section('pageTitle')
+  Deductions Report(Treasury F1)
+@endsection
+
+@section('content')
+  <form method="post" action="{{ url('/arears/treasuryF1') }}">
+
+  <div class="box-body">
+        <div class="row">
+            <div class="col-md-12"><!--1st col-->
+                @if (count($errors) > 0)
+					<div class="alert alert-danger alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+						</button>
+						<strong>Error!</strong> 
+						@foreach ($errors->all() as $error)
+							<p>{{ $error }}</p>
+						@endforeach
+					</div>
+                @endif
+                       
+				@if(session('msg'))
+                    <div class="alert alert-success alert-dismissible" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <strong>Success!</strong> 
+						{{ session('msg') }}
+				    </div>                        
+                @endif
+
+            </div>
+			{{ csrf_field() }}
+            
+				<input type="hidden" name="codeID" id="codeID">
+
+				<div class="col-md-12"><!--2nd col-->
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="reportType">Report Type</label>
+								<select name="reportType" id="reportType" required="true" class="form-control" onchange="check(this.value)">
+									<option></option>
+									<option value="grosspay">Net Pay</option>
+									<option value="tax">PAYE</option>
+									<option value="pension">Pension</option>
+									<option value="totalDeduct">Total Deduction</option>
+									<option value="cumEmolu">Gross Emolument</option>
+								</select>  
+							</div>
+						</div>
+									
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="month">Select Month</label>
+								<select name="month" id="month" class="form-control">
+									<option></option>
+									<option value="January">January</option>
+									<option value="February">February</option>
+									<option value="March">March</option>
+									<option value="April">April</option>
+									<option value="May">May</option>
+									<option value="June">June</option>
+									<option value="July">July</option>
+									<option value="August">August</option>
+									<option value="September">September</option>
+									<option value="October">October</option>
+									<option value="November">November</option>
+									<option value="December">December</option>
+								</select>
+							</div>
+						</div>
+					</div>
+								
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="year">Select Year</label>
+								<select name="year" id="year" class="form-control">
+									<option></option>
+									<option value="2010">2010</option>
+									<option value="2011">2011</option>
+									<option value="2012">2012</option>
+									<option value="2013">2013</option>
+									<option value="2014">2014</option>
+									<option value="2015">2015</option>
+									<option value="2016">2016</option>
+									<option value="2017">2017</option>
+									<option value="2018">2018</option>
+									<option value="2019">2019</option>
+									<option value="2020">2020</option>
+									<option value="2021">2021</option>
+									<option value="2022">2022</option>
+									<option value="2023">2023</option>
+									<option value="2024">2024</option>
+									<option value="2025">2025</option>
+									<option value="2026">2026</option>
+									<option value="2027">2027</option>
+									<option value="2028">2028</option>
+									<option value="2029">2029</option>
+									<option value="2030">2030</option>
+									<option value="2031">2031</option>
+									<option value="2032">2032</option>
+									<option value="2033">2033</option>
+									<option value="2024">2034</option>
+									<option value="2035">2035</option>
+									<option value="2036">2036</option>
+									<option value="2037">2037</option>
+									<option value="2038">2038</option>
+									<option value="2039">2039</option>
+									<option value="2040">2040</option>
+								</select>
+							</div>
+						</div>
+						<!--<div class="col-md-6">
+							<div class="form-group">
+								<label for="bank">Select Bank</label>
+								<select name="bank" id="bank" class="form-control">
+									<option selected></option>
+									@foreach($bank as $bk)
+										<option value="{{$bk->bank}}">{{$bk->bank}}</option>
+									@endforeach
+								</select>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="bankGroup">Bank Group</label>
+								<input type="Text" name="bankGroup" placeholder="Enter Bank Group" id="bankGroup" class="form-control">
+							</div>
+						</div>-->
+						<div class="col-md-6">
+							<div class="form-group" id="workingstatehide">
+								<label for="workingState">Current working state</label>
+								<select name="workingState" id="workingState" class="form-control">
+									<option selected></option>
+									@foreach($workingstate as $ws)
+										<option value="{{$ws->State}}">{{$ws->State}}</option>
+									@endforeach
+							   </select>
+							</div>
+						</div>
+					</div>			
+					<div align="right" class="form-group">
+						<button name="action" id="action" class="btn btn-success" type="submit">View Report</button>
+					</div>
+				</div>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+  </form>
+@endsection
+
+@section('scripts')
+<script src="{{asset('assets/js/jquery-ui.min.js')}}"></script>
+  <script type="text/javascript">
+  	(function () {
+	$('#reportType').change( function(){
+			if ($('#reportType').val() != 'tax'){
+				//$('#workingstatehide').val();
+				//$("#workingstatehide").prepend("<option value='' selected='selected'></option>");
+				$('#workingstatehide').hide();
+			}
+			if ($('#reportType').val() == 'tax'){
+				$('#workingstatehide').show();
+			}	
+	});}) ();
+
+</script>
+@endsection

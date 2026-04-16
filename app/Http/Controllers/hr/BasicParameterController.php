@@ -533,6 +533,44 @@ class BasicParameterController extends functionController
         // return redirect('basic/designation')->with('message', ' successfully updated');;
         return redirect()->back()->with('success', 'Designation updated successfully!');
     }
+    public function updateUnit_16_4_2026(Request $request)
+    {
+        $data['error'] = "";
+        $data['warning'] = "";
+        $data['success'] = "";
+        // $CourtID = trim($request['CourtID']);
+        $department = trim($request['DeptID']);
+        Session::put('DepartmentID', $department);
+        // Session::put('CourtID', $CourtID);
+        $unit = strtoupper(trim($request->unit));
+        $PostID = trim($request['PostID']);
+
+        DB::table('tblunits')->where('unitID', $PostID)->update(['unit' => $unit, 'departmentID' => $department,]);
+        // return redirect('basic/designation')->with('message', ' successfully updated');;
+        return redirect()->back()->with('success', 'Unit updated successfully!');
+    }
+
+    public function updateUnit(Request $request)
+    {
+        $request->validate([
+            'unit' => 'required',
+            'DeptID' => 'required',
+            'PostID' => 'required',
+        ]);
+
+        $unit = strtoupper(trim($request->unit));
+        $department = trim($request->DeptID);
+        $PostID = trim($request->PostID);
+
+        DB::table('tblunits')
+            ->where('unitID', $PostID)
+            ->update([
+                'unit' => $unit,
+                'departmentID' => $department
+            ]);
+
+        return redirect()->back()->with('success', 'Unit updated successfully!');
+    }
 
     public function deletePost(Request $request)
     {
@@ -545,6 +583,21 @@ class BasicParameterController extends functionController
 
 
         DB::table('tbldesignation')->where('id', $postID)->delete();
+
+
+        return redirect()->back()->with('success', 'Designation deleted successfully!');
+    }
+    public function deleteunit(Request $request)
+    {
+
+        $postID = trim($request['PostID']);
+
+        $department = trim($request['depty']);
+        // $court = trim($request['courty']);
+        // Session::put('CourtID', $court);
+
+
+        DB::table('tblunits')->where('unitID', $postID)->delete();
 
 
         return redirect()->back()->with('success', 'Designation deleted successfully!');
@@ -895,6 +948,118 @@ class BasicParameterController extends functionController
         $data['DesignationList'] = $query->orderBy('d.id', 'desc')->paginate(20);
 
         return view('hr.basicparameter.designation', $data);
+    }
+    public function UnitOLD(Request $request)
+    {
+        $data['error'] = "";
+        $data['warning'] = "";
+        $data['success'] = "";
+
+        // ✅ Court Information
+        // $data['CourtInfo'] = $this->CourtInfo();
+
+        // ✅ Auto-assign court when fixed
+        // if ($data['CourtInfo']->courtstatus == 0) {
+        //     $request['court'] = $data['CourtInfo']->courtid;
+        // }
+
+        // ✅ Capture all request values
+        // $data['level'] = trim($request->input('level'));
+        $data['unit'] = trim($request->input('unit'));
+        // $data['court'] = trim($request->input('court'));
+        $data['department'] = trim($request->input('department'));
+        $del = trim($request->input('delcode'));
+
+        // ✅ Court list dropdown
+        // $data['CourtList'] = DB::table('tbl_court')->select('id', 'court_name')->get();
+
+        // ✅ Handle add
+        if ($request->has('add')) {
+            $request->validate([
+                'department' => 'required',
+                // 'level' => 'required',
+                'unit' => 'required',
+            ]);
+
+            DB::table('tblunits')->insert([
+                // 'courtId' => $data['court'],
+                'departmentId' => $data['department'],
+                // 'grade' => $data['level'],
+                'unit' => strtoupper(trim($request->input('unit'))),
+            ]);
+
+            return redirect()->back()->with('success', 'Unit added successfully!');
+        }
+
+
+        if ($request->filled('PostID')) {
+            DB::table('tblunits')->where('id', $request->input('PostID'))->delete();
+            return redirect()->back()->with('success', 'Unit deleted successfully!');
+        }
+
+        // ✅ Department list
+        // $data['DepartmentList'] = $this->DepartmentList($data['court']);
+        $data['DepartmentList'] = DB::table('tbldepartment')->get();
+
+        // ✅ Designation list with pagination
+        $query = DB::table('tblunits as d')
+            ->leftJoin('tbldepartment as dept', 'd.departmentID', '=', 'dept.id')
+            ->select('d.*', 'dept.department');
+
+        // if (!empty($data['court'])) {
+        //     $query->where('d.courtId', $data['court']);
+        // }
+        if (!empty($data['department'])) {
+            $query->where('d.departmentId', $data['department']);
+        }
+
+        $data['UnitList'] = $query->orderBy('d.id', 'desc')->paginate(20);
+
+        return view('hr.basicparameter.unit', $data);
+    }
+
+    public function Unit(Request $request)
+    {
+        $data['error'] = "";
+        $data['warning'] = "";
+        $data['success'] = "";
+
+        $data['unit'] = trim($request->input('unit'));
+        $data['department'] = trim($request->input('department'));
+
+        if ($request->has('add')) {
+
+            $request->validate([
+                'department' => 'required',
+                'unit' => 'required',
+            ]);
+
+            DB::table('tblunits')->insert([
+                'departmentID' => $data['department'],
+                'unit' => strtoupper(trim($data['unit'])),
+            ]);
+
+            return redirect()->back()->with('success', 'Unit added successfully!');
+        }
+
+        if ($request->filled('PostID')) {
+            DB::table('tblunits')->where('unitID', $request->input('PostID'))->delete();
+            return redirect()->back()->with('success', 'Unit deleted successfully!');
+        }
+
+        $data['DepartmentList'] = DB::table('tbldepartment')->get();
+
+        $query = DB::table('tblunits as d')
+            ->leftJoin('tbldepartment as dept', 'd.departmentID', '=', 'dept.id')
+            ->select('d.*', 'dept.department');
+
+        if (!empty($data['department'])) {
+            $query->where('d.departmentID', $data['department']);
+        }
+
+        $data['UnitList'] = $query->orderBy('d.unitID', 'desc')->paginate(20);
+
+        return view('hr.basicparameter.unit', $data);
     }
 
 

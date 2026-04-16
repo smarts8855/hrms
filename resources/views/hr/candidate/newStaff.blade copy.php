@@ -58,12 +58,11 @@
 
             <form method="post" action="{{ route('adminSaveNewStaff') }}" class="form-horizontal">
                 {{ csrf_field() }}
-
                 <div class="box-body">
-                    <div class="form-group" style="margin-left:10px; margin-right:10px">
 
+                    <div class="form-group" style="margin-left:10px; margin-right:10px">
                         <div class="form-group row">
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <label>Title</label>
                                 <select class="form-control" name="title" id="title" required>
                                     <option value=""> -Select- </option>
@@ -73,52 +72,50 @@
                                     <option value="Miss">Miss</option>
                                 </select>
                             </div>
-
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <label>Surname</label>
-                                <input class="form-control" name="surname" id="surname" type="text" required>
+                                <input class="form-control" name="surname" id="surname" type="text" value=""
+                                    required>
                             </div>
 
-                            <div class="col-lg-3">
-                                <label>First Name</label>
-                                <input class="form-control" name="firstname" id="firstname" type="text" required>
+                            <div class="col-lg-4">
+                                <label>First name</label>
+                                <input class="form-control" name="firstname" id="firstname" type="text" placeholder=""
+                                    required>
                             </div>
 
-                            <div class="col-lg-3">
-                                <label>Other Names</label>
-                                <input class="form-control" name="othernames" id="othernames" type="text">
-                            </div>
                         </div>
 
                         <div class="form-group row">
-                            <div class="col-lg-3">
-                                <label>Username</label>
-                                <input class="form-control" name="username" id="username" type="text">
+                            <div class="col-lg-4">
+                                <label>Othernames</label>
+                                <input class="form-control" name="othernames" id="othernames" type="text" placeholder="">
                             </div>
 
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <label>Email</label>
-                                <input class="form-control" name="email" id="email" type="email">
+                                <input class="form-control" name="email" id="email" type="email" placeholder="">
                             </div>
 
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <label>Phone No.</label>
-                                <input class="form-control" name="phoneNo" id="phoneNo" type="text">
+                                <input class="form-control" name="phoneNo" id="phoneNo" type="text" placeholder="">
                             </div>
 
-                            <div class="col-lg-3">
-                                <label>Gender</label>
+                        </div>
+
+                        <div class="form-group row">
+
+                            <div class="col-lg-4">
+                                <label>Sex</label>
                                 <select name="sex" id="sex" required class="form-control">
                                     <option value="" selected>-Select-</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                 </select>
                             </div>
-                        </div>
 
-                        <div class="form-group row">
-
-                            <div class="col-lg-3">
+                            <div class="col-lg-4">
                                 <label>Marital Status</label>
                                 <select name="maritalStatus" id="maritalStatus" required class="form-control">
                                     <option value="" selected>-Select-</option>
@@ -129,61 +126,28 @@
                                 </select>
                             </div>
 
-                            <!-- Correct Department -->
-                            <div class="col-lg-3">
-                                <label>Department</label>
-                                <select name="department_id" id="department_id" required class="form-control">
-                                    <option value="">-Select-</option>
-                                    @foreach ($DepartmentList as $dept)
-                                        <option value="{{ $dept->id }}">{{ $dept->department }}</option>
-                                    @endforeach
+                            <div class="col-lg-2">
+                                <label>Grade</label>
+                                <select name="grade" required class="form-control">
+                                    @for ($i = 1; $i <= 17; $i++)
+                                        @if($i != 11)
+                                        <option value="{{$i}}">{{$i}}</option>
+                                        @endif
+                                    @endfor
                                 </select>
                             </div>
 
-                            <!-- Correct Unit -->
-                            <div class="col-lg-3">
-                                <label>Unit</label>
-                                <select name="unit_id" id="unit_id" required class="form-control">
-                                    <option value="">-Select-</option>
-                                    @foreach ($UnitList as $unit)
-                                        <option value="{{ $unit->unitID }}">{{ $unit->unit }}</option>
-                                    @endforeach
+                            <div class="col-lg-2">
+                                <label>Step</label>
+                                <select name="step" required class="form-control">
+                                    <option value="" selected>-Select-</option>
+                                    @for ($i = 1; $i <= 15; $i++)
+                                        <option value="{{$i}}">{{$i}}</option>
+                                    @endfor
                                 </select>
                             </div>
 
-                            <div class="col-lg-3">
-                                <label>IOU Request Amount Cap</label>
-                                <input type="number" name="iou" id="iou" class="form-control">
-                            </div>
 
-                        </div>
-
-                        <div class="form-group row">
-
-                            <div class="col-lg-3">
-                                <label>Date of Birth</label>
-                                <input type="date" name="date_of_birth" id="date_of_birth" required
-                                    class="form-control" max="{{ date('Y-m-d') }}">
-                            </div>
-
-                            <div class="col-lg-3">
-                                <label>Date of Joining</label>
-                                <input type="date" name="date_of_joining" id="date_of_joining" required
-                                    class="form-control">
-                            </div>
-
-                            <div class="col-lg-3">
-                                <label>Address</label>
-                                <textarea name="address" id="address" required class="form-control" rows="1" oninput="autoGrow(this)"
-                                    onblur="resetSize(this)"></textarea>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <label>Designation</label>
-                                <select name="designation_id" id="designation_id" required class="form-control">
-                                    <option value="">-Select-</option>
-                                </select>
-                            </div>
 
                         </div>
 
@@ -192,7 +156,7 @@
                         </button>
 
                     </div>
-                </div>
+
             </form>
         </div>
     </div>
@@ -322,95 +286,6 @@
 
 
             })
-        });
-    </script>
-    <script>
-        // Set today's date as max
-        document.getElementById('date_of_birth').max = new Date().toISOString().split("T")[0];
-    </script>
-    <script>
-        // Disable future dates
-        document.getElementById('date_of_joining').max = new Date().toISOString().split("T")[0];
-    </script>
-    <script>
-        function autoGrow(field) {
-            field.style.height = "auto"; // Reset height
-            field.style.height = field.scrollHeight + "px"; // Expand based on content
-        }
-
-        function resetSize(field) {
-            field.style.height = "auto"; // Reset
-            field.rows = 1; // Return to default one line
-        }
-    </script>
-    {{-- <script>
-        document.getElementById('department_id').addEventListener('change', function() {
-            let deptID = this.value;
-
-            // Clear designation list
-            let designationSelect = document.getElementById('designation_id');
-            designationSelect.innerHTML = '<option value="">Loading...</option>';
-
-            if (deptID) {
-                fetch(`/get-designations/${deptID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        designationSelect.innerHTML = '<option value="">-Select-</option>';
-
-                        data.forEach(function(item) {
-                            designationSelect.innerHTML +=
-                                `<option value="${item.id}">${item.designation}</option>`;
-                        });
-                    })
-                    .catch(error => {
-                        designationSelect.innerHTML = '<option value="">Error loading...</option>';
-                    });
-            } else {
-                designationSelect.innerHTML = '<option value="">-Select-</option>';
-            }
-        });
-    </script> --}}
-
-    <script>
-        $('#department_id').on('change', function() {
-            let deptID = $(this).val();
-
-            // Reset fields
-            $('#unit_id').html('<option value="">Loading...</option>');
-            $('#designation_id').html('<option value="">Loading...</option>');
-
-            if (deptID) {
-
-                // LOAD UNITS
-                $.ajax({
-                    url: '/ajax/get-units/' + deptID,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#unit_id').empty().append('<option value="">-Select-</option>');
-                        $.each(data, function(key, unit) {
-                            $('#unit_id').append('<option value="' + unit.unitID + '">' + unit
-                                .unit + '</option>');
-                        });
-                    }
-                });
-
-                // LOAD DESIGNATIONS
-                $.ajax({
-                    url: '/get-designations/' + deptID,
-                    type: 'GET',
-                    success: function(data) {
-                        $('#designation_id').empty().append('<option value="">-Select-</option>');
-                        $.each(data, function(key, desig) {
-                            $('#designation_id').append('<option value="' + desig.id + '">' +
-                                desig.designation + '</option>');
-                        });
-                    }
-                });
-
-            } else {
-                $('#unit_id').html('<option value="">-Select-</option>');
-                $('#designation_id').html('<option value="">-Select-</option>');
-            }
         });
     </script>
 @endsection

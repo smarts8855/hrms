@@ -1776,6 +1776,10 @@ Route::group(['middleware' => ['auth', 'force.password.change', 'permission']], 
     Route::get('/admin-add-new-staff', [CandidateController::class, 'adminAddNewStaff']);
     Route::post('/admin-add-new-staff', [CandidateController::class, 'adminSaveNewStaff'])->name('adminSaveNewStaff');
 
+    //fetch ajax disgnation
+    Route::get('/get-designations/{deptID}', [CandidateController::class, 'getDesignations']);
+    Route::get('/ajax/get-units/{deptID}', [CandidateController::class, 'getUnits']);
+
     Route::get('/close-names-entering/{id}',                [CandidateController::class, 'closeCandidate']);
     Route::get('/open-names-entering/{id}',                  [CandidateController::class, 'openCandidate']);
 
@@ -2001,6 +2005,12 @@ Route::group(['middleware' => ['auth', 'force.password.change', 'permission']], 
     Route::get('/basic/designation', [BasicParameterController::class, 'Designation']);
     Route::post('basic/designation/edit', [BasicParameterController::class, 'updateDesignation']);
     Route::post('basic/designation/delete', [BasicParameterController::class, 'deletePost']);
+
+    //basic unit
+    Route::post('/basic/unit', [BasicParameterController::class, 'Unit']);
+    Route::get('/basic/unit', [BasicParameterController::class, 'Unit']);
+    Route::post('basic/unit/edit', [BasicParameterController::class, 'updateUnit']);
+    Route::post('basic/unit/delete', [BasicParameterController::class, 'deleteunit']);
 
     //Retiremnt alert
 

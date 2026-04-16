@@ -153,13 +153,9 @@ class CandidateController extends functionController
     {
         $data['state'] = DB::table('tblstates')->get();
 
-        // $data['DepartmentList'] = DB::table('tbldepartment')
-        //     ->orderBy('id', 'desc')
-        //     ->get();  // 👈 you must add get()
-
         $data['DepartmentList'] = DB::table('tbldepartment')
-            ->orderBy('department', 'asc') // 👈 alphabetical A → Z
-            ->get();
+            ->orderBy('id', 'desc')
+            ->get();  // 👈 you must add get()
 
         $data['UnitList'] = DB::table('tblunits')
             ->orderBy('unitID', 'desc')
@@ -169,121 +165,38 @@ class CandidateController extends functionController
         return view('hr.candidate.newStaff', $data);
     }
 
-    public function getDesignationsOLD($departmentID)
-    {
-        $designations = DB::table('tbldesignation')
-            ->where('departmentID', $departmentID)
-            ->get();
-
-        return response()->json($designations);
-    }
-
-    public function getDesignations($deptID)
-    {
-        $designations = DB::table('tbldesignation')
-            ->where('departmentID', $deptID)
-            ->orderBy('designation', 'asc')
-            ->get();
-
-        return response()->json($designations);
-    }
-
-    public function getUnits($deptID)
-    {
-        $units = DB::table('tblunits')
-            ->where('departmentID', $deptID)
-            ->orderBy('unit', 'asc')
-            ->get();
-
-        return response()->json($units);
-    }
-
     public function adminSaveNewStaff(Request $request)
     {
         // dd($request->all());
-        // $request->validate([
-        //     "title" => "required",
-        //     "surname" => "required",
-        //     "firstname" => "required",
-        //     "othernames" => "nullable",
-        //     "email" => "nullable",
-        //     "phoneNo" => "nullable",
-        //     "sex" => "required",
-        //     "maritalStatus" => "required"
-        // ]);
         $request->validate([
             "title" => "required",
             "surname" => "required",
             "firstname" => "required",
             "othernames" => "nullable",
-            "username" => "nullable",
-            "email" => "nullable|email",
+            "email" => "nullable",
             "phoneNo" => "nullable",
             "sex" => "required",
-            "maritalStatus" => "required",
-            "department_id" => "required|integer",
-            "unit_id" => "required|integer",
-            "designation_id" => "required|integer", // ✅ fixed
-            "iou" => "nullable|numeric",
-            "date_of_birth" => "required|date",
-            "date_of_joining" => "required|date",
-            "address" => "required",
+            "maritalStatus" => "required"
         ]);
         try {
-            // DB::table('tblper')->insert([
-            //     'title' => strtoupper($request->title),
-            //     'surname' => strtoupper($request->surname),
-            //     'first_name' => strtoupper($request->firstname),
-            //     'othernames' => strtoupper($request->othernames),
-            //     'rank' => 0,
-            //     'bankGroup' => 1,
-            //     'bank_branch' => 'ABJ',
-            //     'courtID' => 9,
-            //     'divisionID' => 1,
-            //     'phone' => $request->phoneNo,
-            //     'email' => $request->email,
-            //     'grade' => $request->grade,
-            //     'step' => $request->step,
-            //     'staff_status' => 0,
-            //     'status_value' => 'active service',
-            //     'gender' => $request->sex,
-            //     'maritalstatus' => $request->maritalStatus,
-            //     'isClaimed' => 1,
-            //     'isAdmin' => 1,
-            // ]);
             DB::table('tblper')->insert([
                 'title' => strtoupper($request->title),
                 'surname' => strtoupper($request->surname),
                 'first_name' => strtoupper($request->firstname),
-                'othernames' => $request->othernames ? strtoupper($request->othernames) : null,
-
+                'othernames' => strtoupper($request->othernames),
                 'rank' => 0,
                 'bankGroup' => 1,
                 'bank_branch' => 'ABJ',
                 'courtID' => 9,
                 'divisionID' => 1,
-
                 'phone' => $request->phoneNo,
                 'email' => $request->email,
-
                 'grade' => $request->grade,
                 'step' => $request->step,
-
                 'staff_status' => 0,
                 'status_value' => 'active service',
-
                 'gender' => $request->sex,
                 'maritalstatus' => $request->maritalStatus,
-
-                // ✅ ADD THESE (VERY IMPORTANT)
-                'departmentID' => $request->department_id,
-                'unitID' => $request->unit_id,
-                'designationID' => $request->designation_id,
-                'dob' => $request->date_of_birth,
-                'doj' => $request->date_of_joining,
-                'home_address' => $request->address,
-                'iou_cap' => $request->iou,
-
                 'isClaimed' => 1,
                 'isAdmin' => 1,
             ]);

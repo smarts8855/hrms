@@ -163,7 +163,18 @@ class CandidateController extends functionController
 
         $data['UnitList'] = DB::table('tblunits')
             ->orderBy('unitID', 'desc')
-            ->get();  // 👈 you must add get()
+            ->get();
+
+          $data['QueryStaffReport'] = DB::table('tblper')
+            // ->where('tblper.grade', '!=', 0)
+            // ->where('tblper.step', '!=', 0)
+            ->where('isAdmin', '=', 1)
+            ->leftjoin('lga', 'tblper.lgaID', '=', 'lga.lgaId')
+            ->leftjoin('tblstates', 'tblper.stateID', '=', 'tblstates.StateID')
+            ->leftjoin('tbldesignation', 'tblper.designationID', '=', 'tbldesignation.id')
+            ->get();
+
+        
 
 
         return view('hr.candidate.newStaff', $data);

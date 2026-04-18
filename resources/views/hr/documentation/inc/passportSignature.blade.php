@@ -28,123 +28,142 @@
         margin-right: 6px;
     }
 </style>
+
+
 <form action="{{ url('/documentation-passport-signature') }}" enctype="multipart/form-data" method="POST">
     {{ csrf_field() }}
+
     <div class="tab-pane" role="tabpanel" id="step2">
-        <div class="col-md-offset-0">
-            <h3 class="text-success text-center">
-                <i class="glyphicon glyphicon-camera"></i> <b>Passport And Signature</b>
-            </h3>
-            <div class="text-danger" align="right" style="margin-top: -35px;">
-                Field with <span class="text-danger"><big>*</big></span> is required
-            </div>
-        </div>
-        <br />
 
-    </div>
-    <div class="row col-md-offset-1">
+        <!-- CARD WRAPPER -->
+        <div class="col-md-12">
+            <div class="panel panel-primary">
 
-        <!-- Passport: first row; capture (left) and preview/upload (right) -->
-        <div class="row" style="margin-bottom:15px;">
-            <div class="col-md-12">
-                <h4>Passport</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Capture area -->
-                        <div class="capture-box" style="width:100%;">
-                            <video id="passportVideo" width="100%" height="240" autoplay
-                                style="display:none;border:1px solid #ccc;"></video>
-                            <div style="margin-top:8px;">
-                                <button type="button" id="startCam" class="btn btn-default small-btn">Open
-                                    Camera</button>
-                                <button type="button" id="snap" class="btn btn-primary small-btn"
-                                    disabled>Capture</button>
-                                <button type="button" id="stopCam" class="btn btn-warning small-btn"
-                                    disabled>Close</button>
+                <!-- CARD HEADER -->
+                <div class="panel-heading">
+                    <h3 class="panel-title text-center text-success">
+                        <i class="glyphicon glyphicon-camera"></i>
+                        <b>Passport And Signature</b>
+                    </h3>
+
+                </div>
+
+                <!-- CARD BODY -->
+                <div class="panel-body">
+
+                    <!-- PASSPORT SECTION -->
+                    <h4><b>Passport</b></h4>
+                    <div class="row" style="margin-bottom:25px;">
+
+                        <!-- Capture Camera -->
+                        <div class="col-md-6">
+                            <div class="well">
+
+                                <video id="passportVideo" width="100%" height="240" autoplay
+                                       style="display:none;border:1px solid #ddd;"></video>
+
+                                <div class="text-center" style="margin-top:10px;">
+                                    <button type="button" id="startCam" class="btn btn-default btn-sm">Open Camera</button>
+                                    <button type="button" id="snap" class="btn btn-primary btn-sm" disabled>Capture</button>
+                                    <button type="button" id="stopCam" class="btn btn-warning btn-sm" disabled>Close</button>
+                                </div>
+
                             </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-6">
-                        <div class="capture-box" 
-                        {{-- style="width:100%;" --}}
-                        >
-                            <div class="text-center mb-2">
-                                @if (isset($passportPreviewUrl) && !empty($passportPreviewUrl))
+                        <!-- Preview + Upload -->
+                        <div class="col-md-6">
+                            <div class="well text-center">
+
+                                @if (!empty($passportPreviewUrl))
                                     <small class="text-success">Current passport photo</small>
                                 @else
                                     <small class="text-muted">No passport photo uploaded yet</small>
                                 @endif
-                            </div>
-                            <img id="passportPreview" class="preview-img"
-                                src="{{ !empty($passportPreviewUrl) ? asset($passportPreviewUrl) : '' }}"
-                                alt="Passport preview"
-                                style="width:100%;height:auto;max-height:240px;object-fit:cover;">
-                            <div style="margin-top:8px;">
-                                <input type="file" id="passportFile" name="passport_file" accept="image/*">
-                                <input type="hidden" id="passport_data" name="passport_data" value="">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Signature: second row; canvas (left) and preview/upload (right) -->
-        <div class="row" style="margin-top:10px;">
-            <div class="col-md-12">
-                <h4>Signature</h4>
-                <div class="row">
-                    <div class="col-md-6">
-                        <!-- Canvas & controls -->
-                        <div class="capture-box" style="width:100%;">
-                            <canvas id="sigCanvas" class="sig-canvas" style="width:100%;height:160px;"></canvas>
-                            <div style="margin-top:8px;">
-                                <button type="button" id="sigClear" class="btn btn-default small-btn">Clear</button>
-                                <button type="button" id="sigSave" class="btn btn-success small-btn">Save</button>
+                                <img id="passportPreview"
+                                     src="{{ !empty($passportPreviewUrl) ? asset($passportPreviewUrl) : '' }}"
+                                     class="img-responsive"
+                                     style="margin-top:10px;max-height:240px;object-fit:cover;">
+
+                                <div style="margin-top:10px;">
+                                    <input type="file" id="passportFile" name="passport_file" accept="image/*">
+                                    <input type="hidden" id="passport_data" name="passport_data">
+                                </div>
+
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <div class="capture-box" style="width:100%;">
-                            <div class="text-center mb-2">
-                                @if (isset($signaturePreviewUrl) && !empty($signaturePreviewUrl))
+                    <hr>
+
+                    <!-- SIGNATURE SECTION -->
+                    <h4><b>Signature</b></h4>
+                    <div class="row">
+
+                        <!-- Canvas Drawing -->
+                        <div class="col-md-6">
+                            <div class="well text-center">
+
+                                <canvas id="sigCanvas" class="sig-canvas"
+                                        style="width:100%;height:160px;border:1px solid #ccc;"></canvas>
+
+                                <div style="margin-top:10px;">
+                                    <button type="button" id="sigClear" class="btn btn-default btn-sm">Clear</button>
+                                    <button type="button" id="sigSave" class="btn btn-primary btn-sm">Save</button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Preview + Upload -->
+                        <div class="col-md-6">
+                            <div class="well text-center">
+
+                                @if (!empty($signaturePreviewUrl))
                                     <small class="text-success">Current signature</small>
                                 @else
                                     <small class="text-muted">No signature uploaded yet</small>
                                 @endif
-                            </div>
-                            <img id="signaturePreview" class="preview-img"
-                                src="{{ !empty($signaturePreviewUrl) ? asset($signaturePreviewUrl) : '' }}"
-                                alt="Signature preview"
-                                style="width:100%;height:auto;max-height:160px;object-fit:contain;">
-                            <div style="margin-top:8px;">
-                                <label>Or upload signature image</label>
-                                <input type="file" id="signatureFile" name="signature_file" accept="image/*">
-                                <input type="hidden" id="signature_data" name="signature_data" value="">
+
+                                <img id="signaturePreview"
+                                     src="{{ !empty($signaturePreviewUrl) ? asset($signaturePreviewUrl) : '' }}"
+                                     class="img-responsive"
+                                     style="margin-top:10px;max-height:160px;object-fit:contain;">
+
+                                <div style="margin-top:10px;">
+                                    <label>Or upload signature image</label>
+                                    <input type="file" id="signatureFile" name="signature_file" accept="image/*">
+                                    <input type="hidden" id="signature_data" name="signature_data">
+                                </div>
+
                             </div>
                         </div>
+
                     </div>
+
+                </div> <!-- panel body -->
+
+                <!-- CARD FOOTER -->
+                <div class="panel-footer text-center">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="{{ url('/documentation-account') }}" class="btn btn-default">
+                                Previous
+                            </a>
+                        </li>
+                        <li>
+                            <button type="submit" class="btn btn-primary">
+                                Save and Continue
+                            </button>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        </div>
 
-    </div>
+            </div> <!-- panel -->
+        </div> <!-- col -->
 
-    </p>
-    </p>
-    <hr />
-    <div align="center">
-        <ul class="list-inline">
-
-            <li>
-            <li><a href="{{ url('/documentation-account') }}" class="btn btn-default">Previous</a></li>
-            <button type="submit" class="btn btn-primary">Save and continue</button><!--next-step-->
-            </li>
-        </ul>
-    </div>
-    </div>
+    </div> <!-- tab-pane -->
 </form>
 <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.1/themes/base/jquery-ui.css" rel="stylesheet" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>

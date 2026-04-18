@@ -25,9 +25,9 @@
             <header class="main-header">
                 <nav class="navbar navbar-static-top" style="background: #0B610B">
                     <div align="center" style="color: #fff; font-size: 26px; padding: 10px;">
-                        <b> Government Resource Planning</b>
+                        <b> ISALU HOSPITALS LIMITED</b>
                         <div style="font-size: 18px;">
-                            <h2>SCN-GRP</h2>
+                            <h2>HRMS</h2>
                         </div>
                         <!--<img src="{{ asset('Images/coat.jpg') }}" height="45" align="left" style="border-radius: 4px;">-->
                     </div>
@@ -53,8 +53,8 @@
                         <nav class="navbar navbar-static-top" style="background: #0B610B">
                             <div align="center" style="color: #fff; font-size: 15px; padding: 10px;">
                                 <!--<img src="{{ asset('Images/coat.jpg') }}" height="30" style="border-radius: 4px;">-->
-                                <b>Designed by</b> <a href="http://mbrcomputers.com" target="_blank"
-                                    style="color: white;">MBR Computer Consultants</a> |
+                                <b>Designed by</b> <a href="#" target="_blank"
+                                    style="color: white;">TUNDE</a> |
                                 <strong>Copyright &copy; <?php echo date('Y'); ?> .</strong> All rights reserved.
                                 <!--<img src="{{ asset('Images/coat.jpg') }}" height="30" style="border-radius: 4px;">-->
                             </div>

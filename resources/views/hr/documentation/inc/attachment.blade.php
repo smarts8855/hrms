@@ -1,4 +1,4 @@
-<form action="{{ url('save-attachment') }}" method="post" enctype="multipart/form-data">
+{{-- <form action="{{ url('save-attachment') }}" method="post" enctype="multipart/form-data">
     {{ csrf_field() }}
     <div class="tab-pane" role="tabpanel" id="step3">
         <div class="col-md-offset-0">
@@ -39,11 +39,6 @@
         <div class="row">
             <input type="hidden" id="staffid" name="fileNo" value="{{ $fileNo }}" class="form-control">
 
-            {{-- <div class="col-md-6">
-                <label for="type">File Description <span style="color:red">*</span></label>
-                <input class="form-control input-lg" id="desc" name="description" value="{{ old('desc') }}">
-
-            </div> --}}
 
             <div class="col-md-6">
                 <label for="desc">File Description <span style="color:red">*</span></label>
@@ -82,10 +77,92 @@
                     style="cursor:pointer">Upload</button></div>
 
         </div>
-</form>
+</form> --}}
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <i class="glyphicon glyphicon-envelope"></i>
+            <b>Document Attachment</b>
+        </h3>
+    </div>
+
+    <div class="panel-body">
+
+        <form action="{{ url('save-attachment') }}" method="post" enctype="multipart/form-data">
+            {{ csrf_field() }}
+
+            <div class="row">
+                <div class="col-xs-12">
+                    @if (count($errors) > 0)
+                        <div class="alert alert-danger alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Error!</strong>
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if (session('message'))
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                            <strong>Submission Successful!</strong> {{ session('message') }}
+                        </div>
+                    @endif
+                </div>
+            </div>
+
+            <input type="hidden" id="staffid" name="fileNo" value="{{ $fileNo }}">
+
+            <div class="row">
+
+                <div class="col-md-6">
+                    <label for="desc">File Description <span class="text-danger">*</span></label>
+
+                    @php
+                        $filedescs = [
+                            'Application Letter',
+                            'Letter of Appointment',
+                            'Birth Certificate',
+                            'Certificate of Indigene',
+                            'GEN 75',
+                            'NIN Slip',
+                        ];
+                    @endphp
+
+                    <select id="desc" name="description" class="form-control input-md" required>
+                        <option value="">-- Select --</option>
+                        @foreach ($filedescs as $filedesc)
+                            <option value="{{ $filedesc }}" {{ old('description') == $filedesc ? 'selected' : '' }}>
+                                {{ $filedesc }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label for="title">Attach Document <span class="text-danger">*</span></label>
+                    <input class="form-control input-md" type="file" name="filename" multiple required>
+                </div>
+
+                <div class="col-md-2" style="margin-top:20px;">
+                    <button type="submit" class="btn btn-primary btn-md form-control">
+                        Upload
+                    </button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
 <br>
-<br>
-<div class="row">
+{{-- <br> --}}
+{{-- <div class="row">
     <div class="table-responsive col-md-8 col-md-offset-2">
         <table id="mytable" class="table table-bordered table-striped table-highlight">
             <thead>
@@ -93,7 +170,7 @@
                     <th>S/N</th>
 
                     <th>ATTACHMENT</th>
-                    <!--<th></th>-->
+
 
                 </tr>
             </thead>
@@ -102,7 +179,7 @@
                 @php
                     $i = 1;
                 @endphp
-                {{-- @php $filepath="/staffattachments/" @endphp --}}
+
 
                 @foreach ($staffDETAILS as $p)
                     <tr>
@@ -132,6 +209,63 @@
 </p>
 
 
+</div> --}}
+
+<div class="row">
+    <div class="col-md-12">
+
+        <!-- Bootstrap 3 Card (Panel) -->
+        <div class="panel panel-primary">
+
+            <!-- Card Header -->
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <i class="fa fa-paperclip"></i>
+                    Staff Attachments
+                </h3>
+            </div>
+
+            <!-- Card Body -->
+            <div class="panel-body table-responsive">
+
+                <table id="mytable" class="table table-bordered table-striped table-hover">
+                    <thead>
+                        <tr style="background:#c7c7c7;">
+                            <th>S/N</th>
+                            <th>Attachment</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @php $i = 1; @endphp
+
+                        @foreach ($staffDETAILS as $p)
+                            <tr>
+                                <td>{{ $i++ }}</td>
+
+                                <td>
+                                    <a href="{{ $p->filepath }}" target="_blank">
+                                        <span class="fa fa-file"></span>
+                                        {{ $p->filedesc }}
+                                    </a>
+                                    &nbsp; | &nbsp;
+
+                                    <a onclick="deleteFunction('{{ $p->id }}')"
+                                        style="color:red; cursor:pointer;">
+                                        <i class="fa fa-trash"></i> Remove
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+
+            </div> <!-- panel-body -->
+
+        </div> <!-- panel -->
+
+    </div>
 </div>
 
 <form action="{{ url('/documentation-attachment') }}" method="POST">

@@ -1,165 +1,213 @@
-<form action="{{ url('save-document') }}" method="post" enctype="multipart/form-data">
-    {{ csrf_field() }}
-    <div class="tab-pane" role="tabpanel" id="step3">
-        <div class="col-md-offset-0">
-            <h3 class="text-success text-center">
-                <i class="glyphicon glyphicon-envelope"></i> <b>Education Qualification</b>
-            </h3>
-            <div align="right" style="margin-top: -35px;">
-                Field with <span class="text-danger"><big>*</big></span> is important
-            </div>
-        </div>
-        <div class="col-xs-12">
-            @if (count($errors) > 0)
-                <div class="alert alert-danger alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>Error!</strong>
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
-                </div>
-            @endif
+{{-- <style>
+    .card-panel {
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        background: #fff;
+    }
 
-            @if (session('message'))
-                <div class="alert alert-success alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span>
-                    </button>
-                    <strong>Submission Successful!</strong>
-                    {{ session('message') }}
-                </div>
-            @endif
+    .card-header {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        background: #f9f9f9;
+    }
 
-        </div>
+    .card-title {
+        text-align: center;
+        font-weight: bold;
+        color: #3c763d;
+        margin: 0;
+    }
 
-        <p>&nbsp;</p>
-        <p>
-        <div class="row">
-            <input type="hidden" id="fileNo" name="fileNo" value="{{ $fileNo }}" class="form-control">
+    .card-body {
+        padding: 20px;
+    }
+</style> --}}
 
-            <div class="col-md-6">
+<style>
+    .card-panel {
+        border: 1px solid #337ab7;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        background: #fff;
+    }
 
-                <label>Education <span class="text-danger"><big>*</big></span></label>
-                <select required type="text" id="category" name="category" class="form-control input-lg">
-                    <option>Select</option>
-                    @foreach ($list as $b)
-                        <option value="{{ $b->edu_categoryID }}"
-                            {{ old('category') == $b->edu_categoryID ? 'selected' : '' }}>{{ $b->category }}
-                        </option>
-                    @endforeach
+    .card-header {
+        padding: 12px;
+        border-bottom: 1px solid #337ab7;
+        background: #337ab7;
+    }
 
-                </select>
+    .card-title {
+        text-align: center;
+        font-weight: bold;
+        color: #fff;
+        margin: 0;
+    }
 
-            </div>
+    .card-body {
+        padding: 15px;
+    }
 
+    .table thead tr {
+        background: #f5f5f5;
+    }
 
-            <div class="col-md-6">
-                <label for="type">School Attended <span style="color:red">*</span></label>
-                <input class="form-control input-lg" id="desc" name="school" value="{{ old('desc') }}" required>
-            </div>
-        </div>
-        <div class="row" style="margin-top: 10px;">
-            <div class="col-md-6">
-                <label for="type">From <span style="color:red">*</span></label>
-                <input class="form-control input-lg" type="date" id="from" name="from"
-                    value="{{ old('from') }}" required>
+    .table tbody tr:hover {
+        background: #f9f9f9;
+    }
+</style>
 
-            </div>
-            <div class="col-md-6">
-                <label for="type">To <span style="color:red">*</span></label>
-                <input class="form-control input-lg" type="date" id="to" name="to"
-                    value="{{ old('to') }}" required>
+<div class="card-panel">
 
-            </div>
-
-        </div>
-
-        <div class="row" style="margin-top: 10px;">
-            <div class="col-md-6">
-                <label for="type">Qualification Description (eg. Master of Science) <span
-                        style="color:red">*</span></label>
-                <input class="form-control input-lg" id="desc" name="description" value="{{ old('desc') }}"
-                    required>
-            </div>
-
-            <div class="col-md-6">
-                <label>Class of Qualification (eg. BSc) <span class="text-danger"><big>*</big></span></label>
-                <input class="form-control input-lg" id="class_of_qualification" name="class_of_qualification"
-                    value="{{ old('desc') }}" required>
+    <!-- HEADER -->
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="glyphicon glyphicon-education"></i>
+            Education Qualification
+        </h3>
 
 
-            </div>
-        </div>
-        <div class="row" style="margin-top: 10px;">
-            <div class="col-md-6">
-                <label for="title">Attach Document<span style="color:red"></span></label>
-
-                <input class="form-control input-lg" type="file" name="certificate" multiple>
-
-            </div>
-            <div class="col-md-6" style="margin-top: 35px;"><button type="submit" class="btn btn-success" style="cursor:pointer"><i
-                        class="glyphicon glyphicon-upload"></i> Upload</button></div>
-        </div>
     </div>
-</form>
-<br>
-<br>
-<div class="row">
-    <div class="table-responsive col-md-12">
-        <table id="mytable" class="table table-bordered table-striped table-highlight">
-            <thead>
-                <tr bgcolor="#c7c7c7">
-                    <th>S/N</th>
-                    <th>Education</th>
-                    <th>School</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Class</th>
-                    <th>Description</th>
-                    <th>Certificate</th>
-                </tr>
-            </thead>
 
-            <tbody>
-                @php
-                    $i = 1;
-                @endphp
-                @php $filepath="/CertificatesHeld/" @endphp
+    <div class="card-body">
 
-                @foreach ($staffDETAILS as $p)
+        <form action="{{ url('save-document') }}" method="post" enctype="multipart/form-data">
+            {{ csrf_field() }}
+
+            <input type="hidden" name="fileNo" value="{{ $fileNo }}">
+
+            <!-- ROW 1 (4 COLUMNS) -->
+            <div class="row">
+
+                <div class="col-md-3">
+                    <label>Education </label>
+                    <select name="category" class="form-control input-sm" required>
+                        <option value="">Select</option>
+                        @foreach ($list as $b)
+                            <option value="{{ $b->edu_categoryID }}">
+                                {{ $b->category }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label>School Attended </label>
+                    <input type="text" name="school" class="form-control input-sm" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>From </label>
+                    <input type="date" name="from" class="form-control input-sm" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>To </label>
+                    <input type="date" name="to" class="form-control input-sm" required>
+                </div>
+
+            </div>
+
+            <br>
+
+            <!-- ROW 2 (4 COLUMNS) -->
+            <div class="row">
+
+                <div class="col-md-3">
+                    <label>Qualification Description </label>
+                    <input type="text" name="description" class="form-control input-sm" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Class of Qualification (eg. BSc)</label>
+                    <input type="text" name="class_of_qualification" class="form-control input-sm" required>
+                </div>
+
+                <div class="col-md-3">
+                    <label>Attach Certificate</label>
+                    <input type="file" name="certificate" class="form-control input-sm">
+                </div>
+
+                <div class="col-md-3" style="padding-top: 25px;">
+                    <button type="submit" class="btn  btn-block" style="background-color: #31b0d5; color: #fff">
+                        <i class="glyphicon glyphicon-upload"></i> Upload
+                    </button>
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+
+<br>
+
+<!-- TABLE CARD -->
+<div class="card-panel">
+
+    <div class="card-header">
+        <h3 class="card-title">
+            <i class="glyphicon glyphicon-list"></i>
+            Uploaded Education Records
+        </h3>
+    </div>
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table id="mytable" class="table table-bordered table-striped">
+
+                <thead>
                     <tr>
-                        <td>{{ $i++ }}</td>
-                        <td>{{ $p->category }}</td>
-                        <td>{{ $p->schoolattended }}</td>
-                        <td>{{ $p->schoolfrom }}</td>
-                        <td>{{ $p->schoolto }}</td>
-                        <td>{{ $p->degreequalification }}</td>
-                        <td>{{ $p->certificateheld }}</td>
-                        <td>
-                            <a href="{{ $p->document }}" target="_blank"> <span class="fa fa-file"></span> {{ $p->certificateheld }}</a> |
-                            <a onclick="deleteFunction('{{ $p->id }}')" style="color:red;cursor:pointer"><i
-                                    class="fa fa-trash"></i> Remove</a>
-                        </td>
-
-                        </a>
-                        </td>
-
+                        <th>S/N</th>
+                        <th>Education</th>
+                        <th>School</th>
+                        <th>From</th>
+                        <th>To</th>
+                        <th>Class</th>
+                        <th>Description</th>
+                        <th>Certificate</th>
+                        <th>Action</th>
                     </tr>
-                @endforeach
+                </thead>
 
+                <tbody>
+                    @php $i = 1; @endphp
 
-            </tbody>
+                    @foreach ($staffDETAILS as $p)
+                        <tr>
+                            <td>{{ $i++ }}</td>
+                            <td>{{ $p->category }}</td>
+                            <td>{{ $p->schoolattended }}</td>
+                            <td>{{ $p->schoolfrom }}</td>
+                            <td>{{ $p->schoolto }}</td>
+                            <td>{{ $p->degreequalification }}</td>
+                            <td>{{ $p->certificateheld }}</td>
 
-        </table>
-        <div class="hidden-print"></div>
+                            <td>
+                                <a href="{{ $p->document }}" target="_blank" class="btn btn-info btn-xs">
+                                    <i class="fa fa-file"></i> View
+                                </a>
+                            </td>
+
+                            <td>
+                                <a onclick="deleteFunction('{{ $p->id }}')" class="btn btn-danger btn-xs">
+                                    <i class="fa fa-trash"></i> Remove
+                                </a>
+                            </td>
+
+                        </tr>
+                    @endforeach
+
+                </tbody>
+
+            </table>
+        </div>
+
     </div>
-</div>
-</div>
-</p>
-
-
 </div>
 
 <form action="{{ url('/documentation-education') }}" method="POST">
@@ -323,7 +371,7 @@
             } catch (e) {
                 // Code to run if an exception occurs
             } finally {
-                // Code that is always executed regardless of 
+                // Code that is always executed regardless of
                 // an exception occurring
             }
 
